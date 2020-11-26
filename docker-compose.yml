@@ -1,0 +1,99 @@
+version: '3'
+services:
+
+  app:
+    image: laravel-www
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    depends_on:
+      - redis
+      - mariadb
+    ports:
+      - 8080:80
+    volumes:
+      - .:/var/www/html
+    environment:
+      CONTAINER_ROLE: app
+    networks:
+      - app-network
+
+#  scheduler:
+#    image: laravel-www
+#    depends_on:
+#      - app
+#    volumes:
+#      - .:/var/www/html
+#    environment:
+#      APP_ENV: local
+#      CONTAINER_ROLE: scheduler
+#    networks:
+#      - app-network
+
+  queue:
+    image: laravel-www
+    depends_on:
+      - app
+      - rabbitmq
+    restart: on-failure
+    ports:
+      - 9001:9001
+    volumes:
+      - .:/var/www/html
+    environment:
+      APP_ENV: local
+      CONTAINER_ROLE: queue
+    networks:
+      - app-network
+
+  mariadb:
+    image: mariadb
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: xparser
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: xparser_admin
+      MYSQL_PASSWORD: xparser_password
+    volumes:
+      - mariadb-data:/var/lib/mysql/
+    networks:
+      - app-network
+
+  redis:
+   image: redis:alpine
+   ports:
+    - "16379:6379"
+   volumes:
+    - redis-data:/var/lib/redis
+   networks:
+     - app-network
+   environment:
+    - REDIS_REPLICATION_MODE=master
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - app-network
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  mariadb-data:
+    driver: local
+  rabbitmq-data:
+    driver: local
+  redis-data:
+    driver: local
