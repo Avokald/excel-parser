@@ -21,12 +21,13 @@ docker-compose exec app php composer.phar install
 
 docker-compose exec app cp .env.example .env
 
-# Add pusher params into .env file
+// Add pusher params into .env file
 
 docker-compose exec app php artisan key:generate
 
 docker-compose exec app php artisan migrate
 
+docker-compose restart
 ```
 
 ### dev
@@ -36,6 +37,9 @@ docker-compose exec app npm install
 
 // build
 docker-compose exec app npm run production
+
+// Refresh db
+docker-compose exec app php artisan migrate:fresh
 ```
 
 ### Problems
