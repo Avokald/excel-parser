@@ -19,7 +19,9 @@ docker-compose up -d
 
 docker-compose exec app php composer.phar install 
 
-docker-compose exec app cp .env-example .env
+docker-compose exec app cp .env.example .env
+
+# Add pusher params into .env file
 
 docker-compose exec app php artisan key:generate
 
@@ -45,6 +47,15 @@ that takes previous value recursively. WithCalculatedFormula and WithPreCalculat
 concerns did not compute it correctly.
 
 Queue starts while rabbitmq is not completely loaded, creating error messages in laravel.log file.
+
+Error with bash\r - on Windows with CLRF on. Solution:
+```shell
+git config --global core.eol lf
+git config --global core.autocrlf input
+ 
+git rm -rf --cached .
+git reset --hard HEAD 
+```
 
 
 
