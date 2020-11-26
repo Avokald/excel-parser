@@ -6,11 +6,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UploadExcelFileToParseRowRequest;
 use App\Models\Row;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-use Ramsey\Uuid\Uuid;
 
 class RowController extends Controller
 {
@@ -76,5 +74,14 @@ class RowController extends Controller
         Excel::queueImport($rowsImport, $fileToParse);
 
         return ['status' => true];
+    }
+
+    /**
+     * @return array
+     */
+    public function deleteAll()
+    {
+        Row::where('id', '>', 0)->delete();
+        return redirect(route('frontpage'));
     }
 }

@@ -14,12 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/rows', [RowController::class,'index'])->name('index');
+Route::get('/', [RowController::class, 'index'])->name('frontpage');
 
 Route::get('/upload', [RowController::class, 'upload'])->name('upload');
 
 Route::post('/process', [RowController::class, 'process'])->name('process');
+
+Route::post('/deleteAll', [RowController::class, 'deleteAll'])->name('deleteAll');

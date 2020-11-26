@@ -3,6 +3,10 @@
 @section('content')
     <section class="container container-fluid">
         <h1>Таблица</h1>
+        <form method="post" action="{{ route('deleteAll') }}">
+            @csrf
+            <button class="delete-all">Очистить таблицу</button>
+        </form>
 
         @foreach ($rowsGroupedByDay as $day => $rows)
             <h3 class="caption">День - {{ $day }}</h3>
